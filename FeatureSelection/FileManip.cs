@@ -9,10 +9,10 @@ namespace FeatureSelection
 {
 	class FileManip
 	{
-		static double[][] LoadDataset(string path, out int lines, out int columns)
+		static double[][] LoadDataset(string path)
 		{
-			columns = 0;
-			lines = 1;
+			int columns = 0;
+			int lines = 1;
 
 			if (File.Exists(path))
 			{
