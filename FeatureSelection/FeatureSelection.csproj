@@ -42,7 +42,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CorrelationFilter.cs" />
+    <Compile Include="Crossvalidation.cs" />
     <Compile Include="FileManip.cs" />
+    <Compile Include="Filter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
