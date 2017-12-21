@@ -8,8 +8,10 @@ namespace FeatureSelection
 {
 	class CorrelationFilter : Filter
 	{
+		private bool[] _filter;
+
 		// Returns an array of (data.GetLength(0)) by (remaining + 1) of double
-		public override double[][] FilterData(double[][] data, uint remaining)
+		public override double[][] FilterTrainingData(double[][] data, uint remaining)
 		{
 			uint _vectorNumber = (uint)data.GetLength(0);
 			uint _vectorSize = (uint)data.GetLength(1);
@@ -19,7 +21,7 @@ namespace FeatureSelection
 				remaining = _vectorSize - 1;
 			else if (remaining == 0)
 				throw new Exception("No. The Great Correlation Goat does not approve of you not passing number of remaining columns (or passing a 0).");
-			
+
 			// Creates an array of coefficients between (n-th column) and (the last column)
 			double[] coefficientsArray = Coefficient(data);
 
@@ -27,23 +29,57 @@ namespace FeatureSelection
 			Tuple<double, int>[] coefficients = new Tuple<double, int>[_vectorSize - 1];
 			for (int i = 0; i < _vectorSize - 1; i++)
 				coefficients[i] = new Tuple<double, int>(Math.Abs(coefficientsArray[i]), i);
-			
+
 			// Orders them by the coefficient
 			coefficients = coefficients.OrderBy(i => i.Item1).ToArray();
 
-			// Does not respect the order of initial data
-			double[][] returnValue = new double[_vectorNumber][];
+			_filter = new bool[_vectorSize];
+			for (int i = 0; i < _filter.Length; i++)
+				_filter[i] = false;
+
+			for (int i = 0; i < remaining; i++)
+				_filter[coefficients[i].Item2] = true;
+
+			_filter[_vectorSize - 1] = true;
+
+			return FilterTestData(data);
+		}
+
+		public override double[][] FilterTestData(double[][] data)
+		{
+			// Gets the data dimensions
+			uint _vectorNumber = (uint)data.GetLength(0);
+			uint _vectorSize = (uint)data.GetLength(1);
+
+			// Counts the remaining columns
+			// counts the y column
+			int remaining = 0;
+			foreach (var item in _filter)
+				if (item == true)
+					remaining++;
+
+			// Initializes the return array
+			double[][] returnVal = new double[_vectorNumber][];
+
+			// Initializes return array elements and fills them
 			for (int i = 0; i < _vectorNumber; i++)
 			{
-				returnValue[i] = new double[remaining];
+				returnVal[i] = new double[remaining];
+			}
 
-				for (int j = 0; i < remaining; i++)
+			for (int i = 0, j = 0; i < _vectorSize; i++, j++)
+			{
+				// Could crash here i suppose, fix it
+				while (_filter[j] == false)
+					j++;
+
+				for (int k = 0; k < _vectorNumber; k++)
 				{
-					returnValue[j][i] = data[coefficients[j].Item2][i];
+					returnVal[k][i] = data[k][j];
 				}
 			}
 
-			return returnValue;
+			return returnVal;
 		}
 
 		double[] Coefficient(double[][] data)
@@ -54,9 +90,9 @@ namespace FeatureSelection
 			double[] means = new double[vectorNumber];
 			double[] stdDevs = new double[vectorNumber];
 
-			for(int i = 0; i < vectorSize; i++)
+			for (int i = 0; i < vectorSize; i++)
 			{
-				for(int j = 0; j < vectorNumber; j++)
+				for (int j = 0; j < vectorNumber; j++)
 				{
 					means[i] += data[j][i];
 				}
@@ -64,7 +100,7 @@ namespace FeatureSelection
 				means[i] /= vectorNumber;
 			}
 
-			for(int i = 0; i < vectorSize; i++)
+			for (int i = 0; i < vectorSize; i++)
 			{
 				for (int j = 0; j < vectorNumber; j++)
 				{

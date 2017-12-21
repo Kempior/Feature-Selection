@@ -8,10 +8,12 @@ namespace FeatureSelection
 {
 	abstract class Filter
 	{
-		public abstract double[][] FilterData(double[][] data, uint remaining);
-		public double[][] FilterData(double[][] data)
+		public abstract double[][] FilterTrainingData(double[][] data, uint remaining);
+		public double[][] FilterTrainingData(double[][] data)
 		{
-			return FilterData(data, 0);
+			return FilterTrainingData(data, 0);
 		}
+
+		public abstract double[][] FilterTestData(double[][] data);
 	}
 }
