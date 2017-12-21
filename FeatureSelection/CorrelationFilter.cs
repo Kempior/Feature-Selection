@@ -13,8 +13,8 @@ namespace FeatureSelection
 		// Returns an array of (data.GetLength(0)) by (remaining + 1) of double
 		public override double[][] FilterTrainingData(double[][] data, uint remaining)
 		{
-			uint _vectorNumber = (uint)data.GetLength(0);
-			uint _vectorSize = (uint)data.GetLength(1);
+			uint _vectorNumber = (uint)data.Length;
+			uint _vectorSize = (uint)data[0].Length;
 
 			// Sets the remaining to the (length of the vector - 1)
 			if (remaining > _vectorSize - 1)
@@ -48,8 +48,8 @@ namespace FeatureSelection
 		public override double[][] FilterTestData(double[][] data)
 		{
 			// Gets the data dimensions
-			uint _vectorNumber = (uint)data.GetLength(0);
-			uint _vectorSize = (uint)data.GetLength(1);
+			uint _vectorNumber = (uint)data.Length;
+			uint _vectorSize = (uint)data[0].Length;
 
 			// Counts the remaining columns
 			// counts the y column
@@ -67,7 +67,7 @@ namespace FeatureSelection
 				returnVal[i] = new double[remaining];
 			}
 
-			for (int i = 0, j = 0; i < _vectorSize; i++, j++)
+			for (int i = 0, j = 0; i < remaining; i++, j++)
 			{
 				// Could crash here i suppose, fix it
 				while (_filter[j] == false)
@@ -84,11 +84,11 @@ namespace FeatureSelection
 
 		double[] Coefficient(double[][] data)
 		{
-			int vectorNumber = data.GetLength(0);
-			int vectorSize = data.GetLength(1);
+			int vectorNumber = data.Length;
+			int vectorSize = data[0].Length;
 
-			double[] means = new double[vectorNumber];
-			double[] stdDevs = new double[vectorNumber];
+			double[] means = new double[vectorSize];
+			double[] stdDevs = new double[vectorSize];
 
 			for (int i = 0; i < vectorSize; i++)
 			{
@@ -116,7 +116,7 @@ namespace FeatureSelection
 			{
 				for (int j = 0; j < vectorNumber; j++)
 				{
-					coefficients[i] += ((data[j][i] - means[i]) / stdDevs[i]) * ((data[j][vectorSize] - means[vectorSize]) / stdDevs[vectorSize]);
+					coefficients[i] += ((data[j][i] - means[i]) / stdDevs[i]) * ((data[j][vectorSize - 1] - means[vectorSize - 1]) / stdDevs[vectorSize - 1]);
 				}
 
 				coefficients[i] /= vectorNumber - 1;
