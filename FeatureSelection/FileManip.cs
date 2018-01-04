@@ -9,7 +9,7 @@ namespace FeatureSelection
 {
 	class FileManip
 	{
-		public static double[][] LoadDataset(string path)
+		public static double[][] LoadDataset(string path, int ignore = 2)
 		{
 			int columns = 0;
 			int lines = 1;
@@ -30,7 +30,7 @@ namespace FeatureSelection
 					// End of culture
 
 					// Using reader.ReadLine() here ignores the first line in file
-					columns = reader.ReadLine().Split(' ').Length - 2;
+					columns = reader.ReadLine().Split(' ').Length - ignore;
 
 					for (string line = reader.ReadLine(); line != null && line != ""; line = reader.ReadLine())
 						lines++;
