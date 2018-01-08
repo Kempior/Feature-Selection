@@ -52,6 +52,7 @@
     <Compile Include="FileManip.cs" />
     <Compile Include="Filter.cs" />
     <Compile Include="KNNevol2.cs" />
+    <Compile Include="PCAFilter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
