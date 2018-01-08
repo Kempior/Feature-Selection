@@ -39,7 +39,7 @@ namespace FeatureSelection
             Matrix<double> B = Matrix<double>.Build.DenseOfArray(tmpData);
             
             //Calculate covariance matrix
-            Matrix<double> C = B.TransposeAndMultiply(B).Multiply(1.0 / (data.Length - 1));
+            Matrix<double> C = B.TransposeThisAndMultiply(B).Multiply(1.0 / (data.Length - 1));
 
             //Eigen value decomposition
             Evd<double> decomp = C.Evd();
@@ -75,7 +75,7 @@ namespace FeatureSelection
             
             //Create reduced matrix
             double[][] tmp = new double[L + 1][];
-            for (int i = 0; i < pairs.Length; i++)
+            for (int i = 0; i < L + 1; i++)
             {
                 tmp[i] = pairs[i].Vector;
             }
